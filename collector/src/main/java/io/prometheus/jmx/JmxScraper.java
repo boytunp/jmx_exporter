@@ -212,11 +212,14 @@ class JmxScraper {
             return;
         }
 
+        final String mBeanNameString = mBeanName.toString();
+        final String mBeanDomain = mBeanName.getDomain();
+
         for (Object object : attributes) {
             if (object instanceof Attribute) {
                 Attribute attribute = (Attribute) object;
                 String attributeName = attribute.getName();
-                if (mBeanName.toString().equals("java.lang:type=Runtime")
+                if (mBeanNameString.equals("java.lang:type=Runtime")
                         && (attributeName.equalsIgnoreCase("SystemProperties")
                                 || attributeName.equalsIgnoreCase("ClassPath")
                                 || attributeName.equalsIgnoreCase("BootClassPath")
@@ -224,7 +227,7 @@ class JmxScraper {
                     // Skip this attributes for the "java.lang:type=Runtime" MBean because
                     // getting the values is expensive and the values are ultimately ignored
                     continue;
-                } else if (mBeanName.toString().equals("jdk.management.jfr:type=FlightRecorder")) {
+                } else if (mBeanNameString.equals("jdk.management.jfr:type=FlightRecorder")) {
                     // Skip the FlightRecorderMXBean
                     continue;
                 }
@@ -234,7 +237,7 @@ class JmxScraper {
                 LOGGER.log(FINE, "%s_%s process", mBeanName, mBeanAttributeInfo.getName());
                 processBeanValue(
                         mBeanName,
-                        mBeanName.getDomain(),
+                        mBeanDomain,
                         jmxMBeanPropertyCache.getKeyPropertyList(mBeanName),
                         new LinkedList<>(),
                         mBeanAttributeInfo.getName(),
